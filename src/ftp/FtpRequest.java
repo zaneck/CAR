@@ -1,8 +1,15 @@
 package ftp;
 
-public class FtpRequest {
+public class FtpRequest implements Runnable{
 
-	public void processRequest(String request){
+	private String commande;
+	
+	public FtpRequest(String commande){
+		this.commande=commande;
+	}
+	
+	/*tant que a connection n'est pas close...*/
+	public void processRequest(){
 		
 	}
 	
@@ -40,5 +47,10 @@ public class FtpRequest {
 	
 	public void CDUP(){
 		
+	}
+
+	@Override
+	public void run() {
+		this.processRequest();
 	}
 }
