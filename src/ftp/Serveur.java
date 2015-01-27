@@ -23,6 +23,7 @@ public class Serveur {
 		/*accepter une connection passer la main a un thread*/
 		while(true){
 			socket = ss.accept();
+			System.out.println("hello "+socket.getInetAddress());
 			Thread tFtp =new Thread(new FtpRequest(socket));
 			tFtp.start();
 		}
