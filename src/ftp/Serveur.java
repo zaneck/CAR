@@ -13,7 +13,6 @@ public class Serveur {
 		 		 
 		 /*creation serversocket*/
 		 try {
-			@SuppressWarnings("resource")
 			final ServerSocket ss = new  ServerSocket(Integer.parseInt(args[0]));
 		
 		/*fin creation serversocket*/
@@ -24,7 +23,7 @@ public class Serveur {
 		while(true){
 			socket = ss.accept();
 			System.out.println("hello "+socket.getInetAddress());
-			Thread tFtp =new Thread(new FtpRequest(socket));
+			Thread tFtp =new Thread(new FtpRequest(socket, ss));
 			tFtp.start();
 		}
 		
@@ -32,7 +31,7 @@ public class Serveur {
 			 System.err.println("Argument erreur");
 			 e.printStackTrace();
 		 } catch (IOException e) {
-			 System.err.println("creation serveur erreur");
+			 System.err.println("serveur erreur");
 			 e.printStackTrace();
 		 }
 	}
