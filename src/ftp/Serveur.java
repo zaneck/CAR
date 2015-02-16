@@ -13,7 +13,9 @@ public class Serveur {
 		 		 
 		 /*creation serversocket*/
 		 try {
-			final ServerSocket ss = new  ServerSocket(Integer.parseInt(args[0]));
+			@SuppressWarnings("resource")
+			final ServerSocket ss = new  ServerSocket(3636);
+			final ServerSocket dss = new ServerSocket(3637);
 		
 		/*fin creation serversocket*/
 		 
@@ -23,7 +25,7 @@ public class Serveur {
 		while(true){
 			socket = ss.accept();
 			System.out.println("hello "+socket.getInetAddress());
-			Thread tFtp =new Thread(new FtpRequest(socket, ss));
+			Thread tFtp =new Thread(new FtpRequest(socket, dss));
 			tFtp.start();
 		}
 		

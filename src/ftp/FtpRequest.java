@@ -1,23 +1,17 @@
 package ftp;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class FtpRequest implements Runnable{
-
-	private static final String ERREUR_WRITE_BW = "erreur write";
 	
 	private Socket socket;
-	private ServerSocket ss;
+	private ServerSocket dss;
 	private boolean log;
 	private String directory;
 	private String[] commandeCourante;
@@ -27,9 +21,9 @@ public class FtpRequest implements Runnable{
 	private Socket dsocket;
 	private String root;
 
-	public FtpRequest(Socket socket, ServerSocket ss) throws IOException{
+	public FtpRequest(Socket socket, ServerSocket dss) throws IOException{
 		this.socket=socket;
-		this.ss=ss;
+		this.dss=dss;
 		this.log=false;
 		this.directory= "";
 		this.commandeCourante=null;
@@ -77,10 +71,10 @@ public class FtpRequest implements Runnable{
 			this.processLIST();
 		}
 		else if(this.commandeCourante[0].compareTo("RETR")==0 && this.log){
-			this.processRETR();
+			this.processRETR();//To Do
 		}
 		else if(this.commandeCourante[0].compareTo("STOR")==0 && this.log){
-			this.processSTOR();
+			this.processSTOR();//To Do
 		}
 		else if(this.commandeCourante[0].compareTo("QUIT")==0 && this.log){
 			this.processQUIT();
@@ -89,7 +83,7 @@ public class FtpRequest implements Runnable{
 			this.processPWD();
 		}
 		else if(this.commandeCourante[0].compareTo("CWD")==0 && this.log){
-			this.processCWD();
+			this.processCWD();//To Do
 		}
 		else if(this.commandeCourante[0].compareTo("CDUP")==0 && this.log){
 			this.processCDUP();
@@ -105,16 +99,12 @@ public class FtpRequest implements Runnable{
 		}
 	}
 
-	private void processNeedToLog() {
-		System.out.println("no user log");
-		
-	}
-
 	private void processPASV() throws IOException {
 		System.out.println("PASV");
 		if(this.log){
 			this.sendMessage("227 passive mode (0,0,0,0,14,53)");
-			this.dsocket=ss.accept();
+			this.dsocket=dss.accept();
+			System.out.println("pasv accept");
 		}
 		else{
 		this.sendMessage("530 not log");
@@ -173,8 +163,21 @@ public class FtpRequest implements Runnable{
 		System.out.println("To DO!STOR");
 	}
 
-	public void processLIST(){
-		
+	public void processLIST() throws IOException{
+		System.out.println("LIST");
+		if(!log){
+			this.sendMessage("530 not log");
+		}
+		else{
+			File dossier;
+			dossier= new File(this.directory);
+			String res="";
+			
+			for(File in : dossier.listFiles()){
+				res+=in.getName() + "\r\n";
+			}
+			this.sendListe(res);
+		}
 	}
 
 	public void processQUIT() throws IOException{
@@ -195,15 +198,15 @@ public class FtpRequest implements Runnable{
 	}
 	
 	private void sendListe(String string) throws IOException{
-		System.out.println("envoie liste " +string);
+		System.out.println("envoie liste\n " +string);
 		this.sendMessage("125 listing");
 		
-		DataOutputStream dos= new DataOutputStream(this.socket.getOutputStream());
+		DataOutputStream dos= new DataOutputStream(this.dsocket.getOutputStream());
 		dos.writeBytes(string);
 		dos.flush();
 		
 		this.sendMessage("226 end listing");
-		this.socket.close();
+		dos.close();
 	}
 
 	public void processPWD() throws IOException{
