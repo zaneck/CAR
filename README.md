@@ -23,3 +23,22 @@ Une classe FtpRequest comportant
 * une methode processSTOR se chargeant de traiter la commande STOR
 * une methode processLIST se chargeant de traiter la commande LIST
 * une methode processQUIT se chargeant de traiter la commande QUIT
+
+
+How to use
+==========
+<code>
+	java -jar ftpServer.jar
+</code>
+
+* Utilisation des port 3636 et 3637
+
+* Utilisateur "anonymous" sans mdp et "bilbon" mpd "hello_world"
+
+* L'utilisateur anonymous ne peux se deplacer de son dossier
+
+* Un dossier par utilisateur
+
+* Le serveur utilise une connection passive PASV
+
+* CWD ne prend que des arguments simple, (".." "images"), pas des arguments compose (../Images)

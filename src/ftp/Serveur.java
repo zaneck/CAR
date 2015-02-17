@@ -7,9 +7,6 @@ import java.net.Socket;
 public class Serveur {
 	
 	public static void main(String[] args) {
-		 if(args.length !=1){
-			 System.err.println("Port non specifié");
-		 }
 		 		 
 		 /*creation serversocket*/
 		 try {
