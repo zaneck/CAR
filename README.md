@@ -1,12 +1,13 @@
-# CAR-TP1
-Creer un serveur ftp.
+# CAR
+
+Construction d’Applications Réparties
 
 Auteur
 ======
 Valentin Owczarek val.owczarek@gmail.com
 
-Enonce
-======
+PARTIE 1 serveur ftp
+====================
 
 Une classe Serveur avec une methode main
 
@@ -26,7 +27,7 @@ Une classe FtpRequest comportant
 
 
 How to use
-==========
+
 <code>
 	java -jar ftpServer.jar
 </code>
@@ -42,3 +43,10 @@ How to use
 * Le serveur utilise une connection passive PASV
 
 * CWD ne prend que des arguments simple, (".." "images"), pas des arguments compose (../Images)
+
+PARTIE 2 passerelle rest
+========================
+
+Ce TP met en oeuvre une architecture repartie à trois niveaux : client REST, passerelle
+REST/FTP, serveur FTP. Les questions qui suivent ont pour but de concevoir et d’implanter
+progressivement la passerelle REST/FTP.
