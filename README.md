@@ -37,7 +37,7 @@ How to use
 
 * L'utilisateur anonymous ne peux se deplacer de son dossier
 
-* Un dossier par utilisateur
+* Un dossier par utilisateur, qui doivent etre cree par l'utilisateur du serveur
 
 * Le serveur utilise une connection passive PASV
 
