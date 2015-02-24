@@ -10,6 +10,7 @@ public class Serveur {
 		 		 
 		 /*creation serversocket*/
 		 try {
+			@SuppressWarnings("resource")
 			final ServerSocket ss = new  ServerSocket(3636);
 			final ServerSocket dss = new ServerSocket(3637);
 		

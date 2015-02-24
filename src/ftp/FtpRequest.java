@@ -8,8 +8,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 public class FtpRequest implements Runnable{
 
@@ -98,9 +100,33 @@ public class FtpRequest implements Runnable{
 		else if(this.commandeCourante[0].compareTo("PASV")==0 && this.log){
 			this.processPASV();
 		}
+		else if(this.commandeCourante[0].compareTo("PORT")==0 && this.log){
+			this.processPORT();
+		}
 		else{
 			this.commandeInconnue();
 		}
+	}
+
+	private void processPORT() throws UnknownHostException, IOException {
+		String[] split = this.commandeCourante[1].split(",");
+		
+		// 	Récupération de l'adress IP
+		String ip = split[0];
+		for(int i = 1 ; i <= 3 ; i++){
+			ip += "." + split[i];
+		}
+		
+		// 	Lecture du port
+		int port = Integer.parseInt(split[4]);
+		port *= 256;
+		port += Integer.parseInt(split[5]);
+
+		// 	Ouverture de la connexion
+		System.out.println(ip);
+		System.out.println(port);
+		this.dsocket = new Socket(Inet4Address.getByName(ip), port);
+		
 	}
 
 	private void processPASV() throws IOException {
