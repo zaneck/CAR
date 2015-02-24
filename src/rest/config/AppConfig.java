@@ -1,5 +1,6 @@
 package rest.config;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -14,9 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
-import rest.resource.HelloWorldResource;
-
-
+import rest.resource.FtpResource;
 import rest.rs.JaxRsApiApplication;
 
 @Configuration
@@ -27,12 +26,13 @@ public class AppConfig {
 	}
 	
 	@Bean @DependsOn( "cxf" )
-	public Server jaxRsServer() {
+	public Server jaxRsServer() throws IOException {
 		JAXRSServerFactoryBean factory = RuntimeDelegate.getInstance().createEndpoint( jaxRsApiApplication(), JAXRSServerFactoryBean.class );
 		
 		List<Object> serviceBeans = new ArrayList<Object>();
 		
-		serviceBeans.add(new HelloWorldResource());
+		//serviceBeans.add(new HelloWorldResource());
+		serviceBeans.add(new FtpResource());
 		
 		factory.setServiceBeans(serviceBeans);
 		factory.setAddress( "/" + factory.getAddress() );
@@ -44,16 +44,6 @@ public class AppConfig {
 	public JaxRsApiApplication jaxRsApiApplication() {
 		return new JaxRsApiApplication();
 	}
-	
-	/*@Bean 
-	public PeopleRestService peopleRestService() {
-		return new PeopleRestService();
-	}
-	
-	@Bean 
-	public PeopleService peopleService() {
-		return new PeopleService();
-	}*/
 		
 	@Bean
 	public JacksonJsonProvider jsonProvider() {
