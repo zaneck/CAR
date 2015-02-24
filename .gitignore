@@ -4,3 +4,4 @@
 .project
 test.html
 .DS_Store
+*.class
