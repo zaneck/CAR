@@ -1,7 +1,8 @@
 package rest.service;
 
-import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.Socket;
 
 import org.apache.commons.net.ftp.FTPClient;
@@ -33,7 +34,18 @@ public class FtpService {
 			
 			this.client.list();
 			
-			this.ds.close();
+			BufferedReader bob = new BufferedReader(new InputStreamReader(this.ds.getInputStream()));
+			
+			String ret ="";
+			
+			String tmp = bob.readLine();
+			
+			while(tmp != null){
+				ret += tmp;
+				tmp = bob.readLine();
+			}
+			return ret;
+			//this.ds.close();
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
