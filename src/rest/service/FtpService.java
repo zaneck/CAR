@@ -30,9 +30,12 @@ public class FtpService {
 		try {
 			this.client.enterLocalPassiveMode();
 			this.client.pasv();
+			this.client.getReplyString();
+			
 			this.ds =new Socket(this.client.getRemoteAddress(), 3637);
 			
 			this.client.list();
+			
 			
 			BufferedReader bob = new BufferedReader(new InputStreamReader(this.ds.getInputStream()));
 			
@@ -44,6 +47,7 @@ public class FtpService {
 				ret += tmp;
 				tmp = bob.readLine();
 			}
+			client.completePendingCommand();
 			return ret;
 			//this.ds.close();
 			
