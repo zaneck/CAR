@@ -73,5 +73,9 @@ public class FtpService {
 			this.client.cdup();
 		
 	}
+	
+	public void cd(String directory) throws IOException{
+		this.client.cwd(directory);
+	}
 
 }
