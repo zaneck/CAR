@@ -44,7 +44,7 @@ public class FtpService {
 			String tmp = bob.readLine();
 			
 			while(tmp != null){
-				ret += tmp;
+				ret += tmp+",";
 				tmp = bob.readLine();
 			}
 			client.completePendingCommand();
@@ -67,6 +67,11 @@ public class FtpService {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public void cdup() throws IOException{
+			this.client.cdup();
+		
 	}
 
 }
