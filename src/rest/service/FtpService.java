@@ -16,7 +16,7 @@ public class FtpService {
 		this.client=new FTPClient();
 		try {
 			this.client.connect("localhost", 3636);
-			this.client.login("anonymous", "");
+			this.client.login("bilbon", "helloworld");
 			this.client.enterLocalPassiveMode();
 			
 			System.out.println("----Start ok----");

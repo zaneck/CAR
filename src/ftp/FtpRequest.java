@@ -221,7 +221,12 @@ public class FtpRequest implements Runnable{
 			String res="";
 
 			for(File in : dossier.listFiles()){
-				res+=in.getName() + "\r\n";
+				if(in.isDirectory()){
+					res+=in.getName() +" -d \r\n";
+				}
+				else{
+					res+=in.getName() +" -f \r\n";
+				}
 			}
 			this.sendListe(res);
 		}
@@ -328,7 +333,7 @@ public class FtpRequest implements Runnable{
 			else{
 				if(this.commandeCourante[1].compareTo("..")==0 && this.directory.compareTo(this.root)!=0){//remonter
 					tmp=this.directory.split("/");
-					for(int i=1; i<tmp.length-1; i++){
+					for(int i=1; i<tmp.length-2; i++){
 						res+=tmp[i]+"/";
 						this.directory=res;
 					}
