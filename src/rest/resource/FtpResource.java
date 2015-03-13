@@ -74,7 +74,7 @@ public class FtpResource {
 		try {
 			this.client.cd(dossier);
 		} catch (IOException e) {
-			return this.corps()+"<h4>error: dossier cd incorrecte</h4>";
+			return this.corps()+"<h4>error: dossier incorrecte</h4>";
 		}
 		return this.corps();		 
 	}
