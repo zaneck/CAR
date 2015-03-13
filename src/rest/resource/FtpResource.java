@@ -21,11 +21,13 @@ public class FtpResource {
 	}
 
 	@GET
+	@Produces("text/html")
 	public String presentation() {
 		return corps();
 	}
 
 	@GET
+	@Produces("text/html")
 	@Path("/cdup")
 	public String cdup(){
 		try {
@@ -66,6 +68,7 @@ public class FtpResource {
 	}
 
 	@GET
+	@Produces("text/html")
 	@Path("/cd/{dossier}")
 	public String cd( @PathParam("dossier") String dossier ) {
 		try {
