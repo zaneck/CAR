@@ -110,13 +110,13 @@ public class FtpRequest implements Runnable{
 
 	private void processPORT() throws UnknownHostException, IOException {
 		String[] split = this.commandeCourante[1].split(",");
-		
+
 		// 	Récupération de l'adress IP
 		String ip = split[0];
 		for(int i = 1 ; i <= 3 ; i++){
 			ip += "." + split[i];
 		}
-		
+
 		// 	Lecture du port
 		int port = Integer.parseInt(split[4]);
 		port *= 256;
@@ -126,7 +126,7 @@ public class FtpRequest implements Runnable{
 		System.out.println(ip);
 		System.out.println(port);
 		this.dsocket = new Socket(Inet4Address.getByName(ip), port);
-		
+
 	}
 
 	private void processPASV() throws IOException {
@@ -165,17 +165,18 @@ public class FtpRequest implements Runnable{
 			this.directory=this.directory.concat("anonymous");
 			this.log=true;
 			this.sendMessage("230 anonymous ok");
+			this.root=this.directory+"/";
 		}
 		else if(this.commandeCourante[1].compareTo("bilbon")==0){
 			this.user="bilbon";
 			this.directory=this.directory.concat("bilbon");
 			this.log=true;
 			this.sendMessage("331 user ok need password");
+			this.root=this.directory+"/";
 		}
 		else{
 			this.sendMessage("332 who are you");
 		}
-		this.root=this.directory;
 	}
 
 	public void processPASS() throws IOException{
@@ -255,22 +256,22 @@ public class FtpRequest implements Runnable{
 		this.sendMessage("226 end listing");
 		dos.close();
 	}
-	
+
 	private void envoyeFichier() throws IOException {
 		System.out.println("envoie fichier "+this.commandeCourante[1]);
 		File fichier = new File(this.directory+"/"+this.commandeCourante[1]);
-		
+
 		if(!fichier.exists()){
 			this.sendMessage("404 file not found");
 		}
 		else{
 			this.sendMessage("125 download");
 			DataOutputStream dos= new DataOutputStream(this.dsocket.getOutputStream());
-			
+
 			FileInputStream fis = new FileInputStream(fichier);
 			byte[] tmp = new byte[this.dsocket.getSendBufferSize()];
 			int readb = fis.read(tmp);
-			
+
 			while(readb>0){
 				System.out.println(readb);
 				dos.write(tmp,0,readb);
@@ -283,27 +284,27 @@ public class FtpRequest implements Runnable{
 			dos.close();
 		}
 	}
-	
+
 	private void recoitFichier() throws IOException {
 		System.out.println("reception fichier "+this.commandeCourante[1]);
-		
-			this.sendMessage("125 upload");
-			
-			InputStream is= this.dsocket.getInputStream();
-			FileOutputStream fos = new FileOutputStream(this.directory+"/"+this.commandeCourante[1]);
-			byte[] tmp = new byte[this.dsocket.getReceiveBufferSize()];
-			int readb = is.read(tmp);
-			
-			while(readb != -1){
-				fos.write(tmp, 0, readb);
-				readb = is.read(tmp);
-			}
-			
-			fos.flush();
-			fos.close();
-			
-			this.sendMessage("226 end upload");
-			is.close();
+
+		this.sendMessage("125 upload");
+
+		InputStream is= this.dsocket.getInputStream();
+		FileOutputStream fos = new FileOutputStream(this.directory+"/"+this.commandeCourante[1]);
+		byte[] tmp = new byte[this.dsocket.getReceiveBufferSize()];
+		int readb = is.read(tmp);
+
+		while(readb != -1){
+			fos.write(tmp, 0, readb);
+			readb = is.read(tmp);
+		}
+
+		fos.flush();
+		fos.close();
+
+		this.sendMessage("226 end upload");
+		is.close();
 	}
 
 	public void processPWD() throws IOException{
@@ -331,11 +332,19 @@ public class FtpRequest implements Runnable{
 				this.sendMessage("200 "+this.directory);
 			}
 			else{
-				if(this.commandeCourante[1].compareTo("..")==0 && this.directory.compareTo(this.root)!=0){//remonter
-					tmp=this.directory.split("/");
-					for(int i=1; i<tmp.length-2; i++){
-						res+=tmp[i]+"/";
-						this.directory=res;
+				if(this.commandeCourante[1].compareTo("..")==0){//remonter
+					if(this.directory.equals(this.root) || this.directory.equals(this.root+"/")
+							|| (this.directory+"/").equals(this.root)){
+						this.sendMessage("200 "+this.directory);
+					}
+					else{
+						System.out.println("-----------------"+this.root);
+						System.out.println("-----------------"+this.directory);
+						tmp=this.directory.split("/");
+						for(int i=1; i<tmp.length-1; i++){
+							res+=tmp[i]+"/";
+							this.directory=res;
+						}
 					}
 				}
 				else{//descente
@@ -344,7 +353,7 @@ public class FtpRequest implements Runnable{
 						this.directory=dossier.getAbsolutePath();
 					}
 				}
-			this.sendMessage("200 "+this.directory);
+				this.sendMessage("200 "+this.directory);
 			}
 		}
 	}
