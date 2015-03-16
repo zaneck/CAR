@@ -9,7 +9,7 @@ Valentin Owczarek val.owczarek@gmail.com
 PARTIE 1 serveur ftp
 ====================
 
-Une classe Serveur avec une methode main
+ Une classe Serveur avec une methode main
 
 * ecoutant les demandes de connexion sur un port TCP > 1023
 * donnant acces aux fichiers presents dans un repertoire du systeme de fichier. La valeur de ce repertoire est precisee et initialisee par une valeur passee en argument au moment du lancement du serveur FTP.
@@ -32,21 +32,40 @@ How to use
 	java -jar ftpServer.jar
 </code>
 
-* Utilisation des port 3636 et 3637
-
-* Utilisateur "anonymous" sans mdp et "bilbon" mpd "hello_world"
-
-* L'utilisateur anonymous ne peux se deplacer de son dossier
-
-* Un dossier par utilisateur, qui doivent etre cree par l'utilisateur du serveur
-
-* Le serveur utilise une connection passive PASV
-
-* CWD ne prend que des arguments simple, (".." "images"), pas des arguments compose (../Images)
 
 PARTIE 2 passerelle rest
 ========================
 
 Ce TP met en oeuvre une architecture repartie à trois niveaux : client REST, passerelle
-REST/FTP, serveur FTP. Les questions qui suivent ont pour but de concevoir et d’implanter
-progressivement la passerelle REST/FTP.
+REST/FTP, serveur FTP.
+
+How to use
+<code>
+	java -jar FtpServer.jar
+	java -jar RestPass.jar
+</code>
+
+
+Troubleshooting
+===============
+
+* FTP
+  * Utilisation des port 3636 et 3637
+
+  * Utilisateur "anonymous" sans mdp et "bilbon" mpd "hello_world"
+
+  * L'utilisateur anonymous ne peux se deplacer de son dossier
+
+  * Un dossier par utilisateur, qui doivent etre cree par l'utilisateur du serveur
+    - mkdir -p server/anonymous
+    - mkdir -p server/bilbon
+
+  * Le serveur utilise une connection passive PASV
+
+  * CWD ne prend que des arguments simple, (".." "images"), pas des arguments compose (../Images)
+
+* REST
+  * Lancer la paserelle apres le serveur FTP
+
+  * Connection
+    - [adresseDeLaMachineHote]:8080/rest/api/ftp
