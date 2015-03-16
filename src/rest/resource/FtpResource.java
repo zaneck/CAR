@@ -16,6 +16,8 @@ import rest.service.FtpService;
 @Path("/ftp")
 public class FtpResource {
 	private static final String BASE_URL = "/rest/api/ftp/";
+	private static final String HEAD="<head><meta charset=\"utf-8\" /><title>FTP Server</title></head><body>";
+	private static final String FOOT="</body>";
 	private static final String FTP_SERVER = "<h1>FTP server</h1>";
 	private FtpService client;
 
@@ -50,7 +52,7 @@ public class FtpResource {
 	@Produces("text/html")
 	@Path("/upload")
 	public String upload(){
-		String res = FTP_SERVER;
+		String res = HEAD+FTP_SERVER;
 
 		res+="<ul><li><a href="+BASE_URL+">retour</a></li>";
 		res+="<form action=\""+BASE_URL+"up\" method=\"post\" enctype=\"multipart/form-data\">";
@@ -61,7 +63,7 @@ public class FtpResource {
 		res+="<input type=\"submit\" value=\"Upload\" />";
 		res+="</form>";
 
-		return res;
+		return res+FOOT;
 	}
 
 	@POST
@@ -85,9 +87,9 @@ public class FtpResource {
 	}
 
 	private String corps() {
-		String head=FTP_SERVER;
+		String head=HEAD+FTP_SERVER;
 		head+="<table>";
-		head+="<tr><td><a href="+BASE_URL+"cdup>cdup</a></td>";
+		head+="<tr><td><a href="+BASE_URL+"cdup>Dossier Parent</a></td>";
 		head+="<td><a href="+BASE_URL+"upload>upload</a></td></tr></tr></table>";
 		head+="<p>path:"+this.client.pwd().substring(3)+"</p>";
 		head+="<ul>";
@@ -99,7 +101,7 @@ public class FtpResource {
 			String[] tmp=n.split(" ");
 			if(tmp.length==2){
 				if(tmp[1].equals("-d")){
-					corps= corps + "<li>"+"<a href="+BASE_URL+"cd/"+tmp[0]+">"+tmp[0]+"</a>"+"</li>";
+					corps= corps + "<li>> "+"<a href="+BASE_URL+"cd/"+tmp[0]+">"+tmp[0]+"</a>"+"</li>";
 				}
 				else{
 					corps= corps + "<li>"+"<a href="+BASE_URL+"get/"+tmp[0]+">"+tmp[0]+"</a>"+"</li>";
@@ -110,7 +112,7 @@ public class FtpResource {
 			corps+="<li>Dossier vide</li>";
 		}
 		corps= corps + "</ul>";
-		return head+corps;
+		return head+corps+FOOT;
 	}
 
 	@GET
