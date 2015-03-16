@@ -82,5 +82,20 @@ public class FtpService {
 	public void post(InputStream uploadedInputStream,String filename) throws IOException {
 		this.client.storeFile(filename, uploadedInputStream);	
 	}
+	
+	public void get(String filename){
+		try {
+			this.client.enterLocalPassiveMode();
+			this.client.pasv();
+			this.client.getReplyString();
+			
+			
+			this.ds =new Socket(this.client.getRemoteAddress(), 3637);
+
+			this.client.retrieveFile(filename, this.ds.getOutputStream());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 }

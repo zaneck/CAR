@@ -72,12 +72,11 @@ public class FtpResource {
 
 	@POST
 	@Path("/DOupload")
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Consumes(MediaType.APPLICATION_OCTET_STREAM)
 	public String uploadFile(
 			@FormParam("file") InputStream uploadedInputStream,
 			@FormParam("file") FormDataContentDisposition fileDetail) {
 
-		// save it
 		try {
 			this.client.post(uploadedInputStream,fileDetail.getFileName());
 		} catch (IOException e) {
@@ -124,12 +123,12 @@ public class FtpResource {
 		return head+corps;
 	}
 
-	//	@GET
-	//	@Produces("text/html")
-	//	@Path("/get/{fichier}")
-	//	public String get(@PathParam("fichier") String fichier){
-	//		
-	//		return this.corps();
-	//	}
+		@GET
+		@Produces(MediaType.APPLICATION_OCTET_STREAM)
+		@Path("/get/{fichier}")
+		public String get(@PathParam("fichier") String fichier){
+			this.client.get(fichier);
+			return this.corps();
+		}
 }
 
