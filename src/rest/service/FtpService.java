@@ -2,6 +2,7 @@ package rest.service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
@@ -16,7 +17,7 @@ public class FtpService {
 		this.client=new FTPClient();
 		try {
 			this.client.connect("localhost", 3636);
-			this.client.login("bilbon", "helloworld");
+			this.client.login("bilbon", "hello_world");
 			this.client.enterLocalPassiveMode();
 			
 			System.out.println("----Start ok----");
@@ -76,6 +77,10 @@ public class FtpService {
 	
 	public void cd(String directory) throws IOException{
 		this.client.cwd(directory);
+	}
+
+	public void post(InputStream uploadedInputStream,String filename) throws IOException {
+		this.client.storeFile(filename, uploadedInputStream);	
 	}
 
 }
