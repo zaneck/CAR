@@ -1,11 +1,10 @@
 package rest.service;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.Socket;
 
 import org.apache.commons.net.ftp.FTPClient;
@@ -81,7 +80,7 @@ public class FtpService {
 		this.client.cwd(directory);
 	}
 
-	public void get(String filename) throws IOException {
+	public InputStream get(String filename) throws IOException {
 		try {
 			this.client.enterLocalPassiveMode();
 			this.client.pasv();
@@ -89,10 +88,15 @@ public class FtpService {
 			
 			this.ds =new Socket(this.client.getRemoteAddress(), 3637);
 
-			this.client.retrieveFile(filename, ds.getOutputStream());
+			return this.client.retrieveFileStream(filename);
+//			this.client.retrieveFile(filename, ds.getOutputStream());
+//			
+//			return ds.getInputStream();
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return null;
 	}	
 	
 	public void post(String file, String filename){

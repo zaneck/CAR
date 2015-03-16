@@ -2,7 +2,6 @@ package rest.resource;
 
 import java.io.IOException;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -10,6 +9,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import rest.service.FtpService;
 
@@ -65,7 +65,6 @@ public class FtpResource {
 	}
 
 	@POST
-	//@Consumes(MediaType.APPLICATION_OCTET_STREAM)
 	@Path("/up")
 	public String up( @FormParam("file") String fichier,
 			@FormParam("filename") String filename) {
@@ -86,8 +85,12 @@ public class FtpResource {
 	}
 
 	private String corps() {
-		String head=FTP_SERVER +"<a href="+BASE_URL+"cdup>cdup</a>"+"<p>"+"path:"+this.client.pwd().substring(3)+"</p>";
-		head+="<a href="+BASE_URL+"upload>upload</a>"+"<ul>";
+		String head=FTP_SERVER;
+		head+="<table>";
+		head+="<tr><td><a href="+BASE_URL+"cdup>cdup</a></td>";
+		head+="<td><a href="+BASE_URL+"upload>upload</a></td></tr></tr></table>";
+		head+="<p>path:"+this.client.pwd().substring(3)+"</p>";
+		head+="<ul>";
 		String corps="";
 
 		String[] ls = this.client.ls().split(",");
@@ -113,13 +116,15 @@ public class FtpResource {
 	@GET
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	@Path("/get/{fichier}")
-	public String get(@PathParam("fichier") String fichier){
+	public Response get(@PathParam("fichier") String fichier){
 		try {
-			this.client.get(fichier);
+			return Response.ok(this.client.get(fichier),
+					MediaType.APPLICATION_OCTET_STREAM).build();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return this.corps();
+		//return this.corps();
+		return null;
 	}
 }
 
