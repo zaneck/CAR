@@ -1,10 +1,6 @@
 package rest.resource;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -14,9 +10,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
-import com.sun.jersey.core.header.FormDataContentDisposition;
 
 import rest.service.FtpService;
 
@@ -60,8 +53,9 @@ public class FtpResource {
 		String res = FTP_SERVER;
 
 		res+="<ul><li><a href="+BASE_URL+">retour</a></li>";
-		res+="<form action=\""+BASE_URL+"DOupload\" method=\"post\" enctype=\"multipart/form-data\">";
+		res+="<form action=\""+BASE_URL+"up\" method=\"post\" enctype=\"multipart/form-data\">";
 		res+="<p>";
+		res+="filename : <input type=\"text\" name=\"filename\" size=\"45\" />";
 		res+="Selectioner un fichier : <input type=\"file\" name=\"file\" size=\"45\" />";
 		res+="</p>";
 		res+="<input type=\"submit\" value=\"Upload\" />";
@@ -71,19 +65,12 @@ public class FtpResource {
 	}
 
 	@POST
-	@Path("/DOupload")
-	@Consumes(MediaType.APPLICATION_OCTET_STREAM)
-	public String uploadFile(
-			@FormParam("file") InputStream uploadedInputStream,
-			@FormParam("file") FormDataContentDisposition fileDetail) {
-
-		try {
-			this.client.post(uploadedInputStream,fileDetail.getFileName());
-		} catch (IOException e) {
-			return "<a href=\"+BASE_URL+\">retour</a><h4>ERREUR</h4>";
-		}
-
-		return "<a href=\"+BASE_URL+\">retour</a><h4>transfere okR</h4>";
+	//@Consumes(MediaType.APPLICATION_OCTET_STREAM)
+	@Path("/up")
+	public String up( @FormParam("file") String fichier,
+			@FormParam("filename") String filename) {
+		this.client.post(fichier, filename);
+		return this.corps();
 	}
 
 	@GET
@@ -123,12 +110,16 @@ public class FtpResource {
 		return head+corps;
 	}
 
-		@GET
-		@Produces(MediaType.APPLICATION_OCTET_STREAM)
-		@Path("/get/{fichier}")
-		public String get(@PathParam("fichier") String fichier){
+	@GET
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	@Path("/get/{fichier}")
+	public String get(@PathParam("fichier") String fichier){
+		try {
 			this.client.get(fichier);
-			return this.corps();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+		return this.corps();
+	}
 }
 

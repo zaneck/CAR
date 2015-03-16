@@ -1,9 +1,11 @@
 package rest.service;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
 
 import org.apache.commons.net.ftp.FTPClient;
@@ -79,20 +81,30 @@ public class FtpService {
 		this.client.cwd(directory);
 	}
 
-	public void post(InputStream uploadedInputStream,String filename) throws IOException {
-		this.client.storeFile(filename, uploadedInputStream);	
-	}
-	
-	public void get(String filename){
+	public void get(String filename) throws IOException {
 		try {
 			this.client.enterLocalPassiveMode();
 			this.client.pasv();
 			this.client.getReplyString();
 			
-			
 			this.ds =new Socket(this.client.getRemoteAddress(), 3637);
 
-			this.client.retrieveFile(filename, this.ds.getOutputStream());
+			this.client.retrieveFile(filename, ds.getOutputStream());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}	
+	
+	public void post(String file, String filename){
+		try {
+			this.client.enterLocalPassiveMode();
+			this.client.pasv();
+			this.client.getReplyString();
+			
+			this.ds =new Socket(this.client.getRemoteAddress(), 3637);
+			
+			this.client.storeFile(filename, new ByteArrayInputStream(file.getBytes()));
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
